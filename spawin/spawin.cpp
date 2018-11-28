@@ -19,7 +19,6 @@ int main(int argc, char** argv)
 
 	delete sparta;
 
-
 	MPI_Finalize();
 
 	return 0;

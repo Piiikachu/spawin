@@ -27,6 +27,12 @@
     <ClInclude Include="SPARTA.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Universe.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Pointers.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -36,6 +42,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="SPARTA.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Universe.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
