@@ -8,7 +8,7 @@ namespace SPARTA_NS {
 	{
 	public:
 		class Universe *universe;
-
+		class Memory *memory;
 
 		SPARTA(int, char **,MPI_Comm);
 		~SPARTA();

@@ -2,6 +2,7 @@
 #ifndef SPARTA_POINTERS_H
 #define SPARTA_POINTERS_H
 #include "SPARTA.h"
+#include "spatype.h"
 
 namespace SPARTA_NS {
 
@@ -21,12 +22,16 @@ namespace SPARTA_NS {
 	class Pointers {
 	public:
 		Pointers(SPARTA *ptr):
-			sparta(ptr){}
+			sparta(ptr),
+			memory(ptr->memory),
+			universe(ptr->universe){}
 			
-
+		virtual ~Pointers(){}
 
 	protected:
 		SPARTA *sparta;
+		Memory *&memory;
+		Universe *&universe;
 	};
 
 

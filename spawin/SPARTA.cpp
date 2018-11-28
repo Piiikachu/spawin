@@ -3,6 +3,7 @@
 #include <mpi.h>
 #include <string.h>
 #include "Universe.h"
+#include "Memory.h"
 
 using namespace SPARTA_NS;
 
@@ -20,8 +21,9 @@ SPARTA::SPARTA(int narg, char **arg, MPI_Comm communicator)
 	printf("%s: class sparta from process %d \n", processor_name, myid);
 #pragma endregion
 
+	memory = new Memory(this); 
 	universe = new Universe(this, communicator);
-
+	
 
 	int inflag = 0;
 
