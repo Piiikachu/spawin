@@ -24,6 +24,12 @@ namespace SPARTA_NS {
 		Pointers(SPARTA *ptr):
 			sparta(ptr),
 			memory(ptr->memory),
+			error(ptr->error),
+			output(ptr->output),
+			world(ptr->world),
+			infile(ptr->infile),
+			screen(ptr->screen),
+			logfile(ptr->logfile),
 			universe(ptr->universe){}
 			
 		virtual ~Pointers(){}
@@ -32,6 +38,15 @@ namespace SPARTA_NS {
 		SPARTA *sparta;
 		Memory *&memory;
 		Universe *&universe;
+		Error *&error;
+		Output *&output;
+
+
+		MPI_Comm &world;
+		FILE *&infile;
+		FILE *&screen;
+		FILE *&logfile;
+
 	};
 
 

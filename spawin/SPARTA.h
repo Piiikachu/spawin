@@ -9,6 +9,14 @@ namespace SPARTA_NS {
 	public:
 		class Universe *universe;
 		class Memory *memory;
+		class Error *error;
+
+		class Output *output;
+
+		MPI_Comm world;                // MPI communicator
+		FILE *infile;                  // infile
+		FILE *screen;                  // screen output
+		FILE *logfile;                 // logfile
 
 		SPARTA(int, char **,MPI_Comm);
 		~SPARTA();
