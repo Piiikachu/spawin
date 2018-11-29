@@ -6,6 +6,7 @@
 #include "Memory.h"
 #include "Error.h"
 #include "Output.h"
+#include "Input.h"
 
 using namespace SPARTA_NS;
 
@@ -112,6 +113,158 @@ SPARTA::SPARTA(int narg, char **arg, MPI_Comm communicator)
 				error->universe_one(FLERR, "Cannot open universe log file");
 		}
 	}
+	if (universe->me > 0) {
+		if (screenflag == 0) universe->uscreen = stdout;
+		else universe->uscreen = NULL;
+		universe->ulogfile = NULL;
+	}
+	// make universe and single world the same, since no partition switch
+	// world inherits settings from universe
+	// set world screen, logfile, communicator, infile
+	// open input script if from file
+
+	if (universe->existflag == 0) {
+		screen = universe->uscreen;
+		logfile = universe->ulogfile;
+		world = universe->uworld;
+		infile = NULL;
+
+		if (universe->me == 0) {
+			if (inflag == 0) infile = stdin;
+			else infile = fopen(arg[inflag], "r");
+			if (infile == NULL) {
+				char str[128];
+				sprintf(str, "Cannot open input script %s", arg[inflag]);
+				error->one(FLERR, str);
+			}
+		}
+
+		if (universe->me == 0) {
+			if (screen) fprintf(screen, "SPARTA (%s)\n", universe->version);
+			if (logfile) fprintf(logfile, "SPARTA (%s)\n", universe->version);
+		}
+
+		// universe is one or more worlds, as setup by partition switch
+		// split universe communicator into separate world communicators
+		// set world screen, logfile, communicator, infile
+		// open input script
+
+	}
+	else {
+		int me;
+		MPI_Comm_split(universe->uworld, universe->iworld, 0, &world);
+		MPI_Comm_rank(world, &me);
+
+		if (me == 0)
+			if (partscreenflag == 0)
+				if (screenflag == 0) {
+					char str[32];
+					sprintf(str, "screen.%d", universe->iworld);
+					screen = fopen(str, "w");
+					if (screen == NULL) error->one(FLERR, "Cannot open screen file");
+				}
+				else if (strcmp(arg[screenflag], "none") == 0)
+					screen = NULL;
+				else {
+					char str[128];
+					sprintf(str, "%s.%d", arg[screenflag], universe->iworld);
+					screen = fopen(str, "w");
+					if (screen == NULL) error->one(FLERR, "Cannot open screen file");
+				}
+			else if (strcmp(arg[partscreenflag], "none") == 0)
+				screen = NULL;
+			else {
+				char str[128];
+				sprintf(str, "%s.%d", arg[partscreenflag], universe->iworld);
+				screen = fopen(str, "w");
+				if (screen == NULL) error->one(FLERR, "Cannot open screen file");
+			}
+		else screen = NULL;
+
+		if (me == 0)
+			if (partlogflag == 0)
+				if (logflag == 0) {
+					char str[32];
+					sprintf(str, "log.sparta.%d", universe->iworld);
+					logfile = fopen(str, "w");
+					if (logfile == NULL) error->one(FLERR, "Cannot open logfile");
+				}
+				else if (strcmp(arg[logflag], "none") == 0)
+					logfile = NULL;
+				else {
+					char str[128];
+					sprintf(str, "%s.%d", arg[logflag], universe->iworld);
+					logfile = fopen(str, "w");
+					if (logfile == NULL) error->one(FLERR, "Cannot open logfile");
+				}
+			else if (strcmp(arg[partlogflag], "none") == 0)
+				logfile = NULL;
+			else {
+				char str[128];
+				sprintf(str, "%s.%d", arg[partlogflag], universe->iworld);
+				logfile = fopen(str, "w");
+				if (logfile == NULL) error->one(FLERR, "Cannot open logfile");
+			}
+		else logfile = NULL;
+
+		if (me == 0) {
+			infile = fopen(arg[inflag], "r");
+			if (infile == NULL) {
+				char str[128];
+				sprintf(str, "Cannot open input script %s", arg[inflag]);
+				error->one(FLERR, str);
+			}
+		}
+		else infile = NULL;
+
+		// screen and logfile messages for universe and world
+
+		if (universe->me == 0) {
+			if (universe->uscreen) {
+				fprintf(universe->uscreen, "SPARTA (%s)\n", universe->version);
+				fprintf(universe->uscreen, "Running on %d partitions of processors\n",
+					universe->nworlds);
+			}
+			if (universe->ulogfile) {
+				fprintf(universe->ulogfile, "SPARTA (%s)\n", universe->version);
+				fprintf(universe->ulogfile, "Running on %d partitions of processors\n",
+					universe->nworlds);
+			}
+		}
+
+		if (me == 0) {
+			if (screen) {
+				fprintf(screen, "SPARTA (%s)\n", universe->version);
+				fprintf(screen, "Processor partition = %d\n", universe->iworld);
+			}
+			if (logfile) {
+				fprintf(logfile, "SPARTA (%s)\n", universe->version);
+				fprintf(logfile, "Processor partition = %d\n", universe->iworld);
+			}
+		}
+	}
+	// check datatype settings in spatype.h
+
+	if (sizeof(smallint) != sizeof(int))
+		error->all(FLERR, "Smallint setting in spatype.h is invalid");
+	if (sizeof(bigint) < sizeof(smallint))
+		error->all(FLERR, "Bigint setting in spatype.h is invalid");
+
+	int mpisize;
+	MPI_Type_size(MPI_SPARTA_BIGINT, &mpisize);
+	if (mpisize != sizeof(bigint))
+		error->all(FLERR,
+			"MPI_SPARTA_BIGINT and bigint in spatype.h "
+			"are not compatible");
+
+	if (sizeof(smallint) != 4 || sizeof(bigint) != 8)
+		error->all(FLERR, "Small,big integers are not sized correctly");
+
+
+
+
+	input = new Input(this, narg, arg);
+
 
 }
 

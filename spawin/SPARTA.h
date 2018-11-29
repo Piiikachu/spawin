@@ -10,6 +10,8 @@ namespace SPARTA_NS {
 		class Universe *universe;
 		class Memory *memory;
 		class Error *error;
+		class Input *input;
+
 
 		class Output *output;
 

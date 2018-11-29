@@ -30,6 +30,7 @@ namespace SPARTA_NS {
 			infile(ptr->infile),
 			screen(ptr->screen),
 			logfile(ptr->logfile),
+			input(ptr->input),
 			universe(ptr->universe){}
 			
 		virtual ~Pointers(){}
@@ -40,6 +41,7 @@ namespace SPARTA_NS {
 		Universe *&universe;
 		Error *&error;
 		Output *&output;
+		Input *&input;
 
 
 		MPI_Comm &world;

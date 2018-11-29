@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Error.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="Output.h" />
     <ClInclude Include="Pointers.h" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Error.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="Output.cpp" />
     <ClCompile Include="SPARTA.cpp" />
