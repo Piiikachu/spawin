@@ -10,4 +10,5 @@ Input::Input(SPARTA *sparta, int argc, char **argv):Pointers(sparta)
 
 Input::~Input()
 {
+
 }

@@ -25,6 +25,7 @@ SPARTA::SPARTA(int narg, char **arg, MPI_Comm communicator)
 #pragma endregion
 
 	memory = new Memory(this); 
+	error = new Error(this);
 	universe = new Universe(this, communicator);
 	
 
@@ -65,6 +66,7 @@ SPARTA::SPARTA(int narg, char **arg, MPI_Comm communicator)
 			inflag = iarg + 1;
 			iarg += 2;
 		}
+		else error->universe_all(FLERR, "Invalid command-line argument");
 	}
 	if (universe->existflag==0)
 	{
@@ -265,10 +267,51 @@ SPARTA::SPARTA(int narg, char **arg, MPI_Comm communicator)
 
 	input = new Input(this, narg, arg);
 
+	//// copy package cmdline arguments
 
+	//if (npack > 0) {
+	//	num_package = npack;
+	//	packargs = new char**[npack];
+	//	for (int i = 0; i < npack; ++i) {
+	//		int n = plast[i] - pfirst[i];
+	//		packargs[i] = new char*[n + 1];
+	//		for (int j = 0; j < n; ++j)
+	//			packargs[i][j] = strdup(arg[pfirst[i] + j]);
+	//		packargs[i][n] = NULL;
+	//	}
+	//	memory->destroy(pfirst);
+	//	memory->destroy(plast);
+	//}
+
+	// allocate fundamental classes
+
+	create();
+	//post_create();
+
+	// if helpflag set, print help and exit
+
+	if (helpflag) {
+		if (universe->me == 0) print_styles();
+		error->done();
+	}
 }
 
 
 SPARTA::~SPARTA()
 {
+	destroy();
+	delete input;
+	delete universe;
+	delete error;
+	delete memory;
+}
+
+void SPARTA::create() {
+	output = new Output(this);
+}
+void SPARTA::destroy() {
+	delete	output;
+}
+void SPARTA::print_styles() {
+	printf("print styles");
 }

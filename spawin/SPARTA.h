@@ -22,6 +22,12 @@ namespace SPARTA_NS {
 
 		SPARTA(int, char **,MPI_Comm);
 		~SPARTA();
+		void create();
+		//void post_create();
+		//void init();
+		void destroy();
+
+		void print_styles();
 	};
 
 }
